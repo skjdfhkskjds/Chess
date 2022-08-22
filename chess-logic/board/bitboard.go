@@ -16,9 +16,9 @@ type Bitboards struct {
 
 // Initializes Bitboard
 
-func NewBitboard(n uint64) *Bitboards {
+func NewBitboard() *Bitboards {
 	return &Bitboards{
-		board: n,
+		board: 0,
 	}
 }
 
@@ -57,4 +57,6 @@ func (board *Bitboards) Print_Bitboard() {
 		print("\n")
 	}
 	print("\n     a b c d e f g h\n\n")
+
+	fmt.Printf("    Bitboard: %d\n\n", board.board)
 }

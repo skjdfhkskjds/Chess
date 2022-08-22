@@ -1,15 +1,16 @@
 package main
 
 import (
-	"github.com/skjdfhkskjds/Chess/board"
+	"github.com/skjdfhkskjds/Chess/chess-logic/board"
+	"github.com/skjdfhkskjds/Chess/chess-logic/moves"
 )
 
 func main() {
-	bitboard := *board.NewBitboard(uint64(0))
+	bitboard := moves.GeneratePawnAttacks(board.E4, board.WHITE)
 
 	// testing
-	bitboard.SetBit(board.E2)
-	bitboard.PopBit(board.E2)
+	// bitboard.SetBit(board.E2)
+	// bitboard.PopBit(board.E2)
 	bitboard.Print_Bitboard()
 
 	// for n := 8; n >= 1; n-- {

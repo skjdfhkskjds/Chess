@@ -4,34 +4,57 @@ import (
 	"fmt"
 )
 
-type BitBoard interface {
-	GetBit(i int) bool
-	Print_BitBoard(board uint64)
-}
+// type Bitboard interface {
+// 	GetBit(i int) bool
+// 	Print_Bitboard(board uint64)
+// }
 
-type BitBoards struct {
+type Bitboards struct {
 	board uint64
-	piece byte
+	// piece byte
 }
 
-func (board BitBoards) GetBit(i int) bool {
-	return (board.board & (1 << i)) != 0
+// Initializes Bitboard
+
+func NewBitboard(n uint64) *Bitboards {
+	return &Bitboards{
+		board: n,
+	}
 }
 
-func (board BitBoards) Print_BitBoard() {
+// Get, Set, Pop Operators
+
+func (board *Bitboards) GetBit(square int) bool {
+	return (board.board & (uint64(1) << square)) != 0
+}
+
+func (board *Bitboards) SetBit(square int) {
+	board.board |= (uint64(1) << square)
+}
+
+func (board *Bitboards) PopBit(square int) {
+	if board.GetBit(square) {
+		board.board ^= (uint64(1) << square)
+	}
+}
+
+// Complex Operations
+
+func (board *Bitboards) Print_Bitboard() {
 	print("\n")
 	for rank := 0; rank < 8; rank++ {
 		for file := 0; file < 8; file++ {
 			square := rank*8 + file
 			if file == 0 {
-				print("  %d ", 8-rank)
+				fmt.Printf("  %d ", 8-rank)
 			}
 			if board.GetBit(square) {
-				print(" %d", 1)
+				fmt.Printf(" %d", 1)
 			} else {
-				print(" %d", 0)
+				fmt.Printf(" %d", 0)
 			}
 		}
 		print("\n")
 	}
+	print("\n     a b c d e f g h\n\n")
 }

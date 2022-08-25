@@ -1,5 +1,29 @@
 package board
 
+// TEAMS ENUMS
+const (
+	WHITE = iota
+	BLACK
+)
+
+const (
+	PAWN = iota
+	KNIGHT
+	KING
+	BISHOP
+	ROOK
+	QUEEN
+)
+
+// FILE MASKS
+const (
+	NOT_A_FILE  uint64 = 18374403900871474942
+	NOT_H_FILE  uint64 = 9187201950435737471
+	NOT_GH_FILE uint64 = 4557430888798830399
+	NOT_AB_FILE uint64 = 18229723555195321596
+)
+
+// SQUARES ENUMS
 const (
 	A8 = iota
 	B8
@@ -65,11 +89,6 @@ const (
 	F1
 	G1
 	H1
-)
-
-const (
-	WHITE = iota
-	BLACK
 )
 
 // Readable squares [IF NEEDED IN FUTURE]

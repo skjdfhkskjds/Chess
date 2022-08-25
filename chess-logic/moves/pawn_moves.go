@@ -1,21 +1,31 @@
 package moves
 
-import "github.com/skjdfhkskjds/Chess/board"
+import "github.com/skjdfhkskjds/Chess/chess-logic/board"
 
-type Pawn_Attacks struct {
-	attacks [2][64]uint64
-}
-
-func GeneratePawnAttacks(square, side int) *board.Bitboards {
-	// attackBoard := board.NewBitboard()
+// IMPLEMENT EN PASSANT
+func GeneratePawnAttacks(side, square int) *board.Bitboards {
+	attackBoard := board.NewBitboard()
 	pieceBoard := board.NewBitboard()
 	pieceBoard.SetBit(square)
 
 	// white team
 	if side == 0 {
-
-	} else {
-
+		// checks whether the "attacked square" is out of bounds
+		if ((pieceBoard.Board >> 7) & board.NOT_A_FILE) != 0 {
+			attackBoard.Board |= (pieceBoard.Board >> 7)
+		}
+		if ((pieceBoard.Board >> 9) & board.NOT_H_FILE) != 0 {
+			attackBoard.Board |= (pieceBoard.Board >> 9)
+		}
+	} else { // black team
+		// checks whether the "attacked square" is out of bounds
+		if ((pieceBoard.Board << 7) & board.NOT_H_FILE) != 0 {
+			attackBoard.Board |= (pieceBoard.Board << 7)
+		}
+		if ((pieceBoard.Board << 9) & board.NOT_A_FILE) != 0 {
+			attackBoard.Board |= (pieceBoard.Board << 9)
+		}
 	}
-	return pieceBoard
+	attackBoard.Piece = board.PAWN
+	return attackBoard
 }

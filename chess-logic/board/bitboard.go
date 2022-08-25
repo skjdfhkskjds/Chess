@@ -4,37 +4,31 @@ import (
 	"fmt"
 )
 
-// type Bitboard interface {
-// 	GetBit(i int) bool
-// 	Print_Bitboard(board uint64)
-// }
-
 type Bitboards struct {
-	board uint64
-	// piece byte
+	Board uint64
+	Piece int
 }
 
 // Initializes Bitboard
-
 func NewBitboard() *Bitboards {
 	return &Bitboards{
-		board: 0,
+		Board: 0,
 	}
 }
 
 // Get, Set, Pop Operators
 
 func (board *Bitboards) GetBit(square int) bool {
-	return (board.board & (uint64(1) << square)) != 0
+	return (board.Board & (uint64(1) << square)) != 0
 }
 
 func (board *Bitboards) SetBit(square int) {
-	board.board |= (uint64(1) << square)
+	board.Board |= (uint64(1) << square)
 }
 
 func (board *Bitboards) PopBit(square int) {
 	if board.GetBit(square) {
-		board.board ^= (uint64(1) << square)
+		board.Board ^= (uint64(1) << square)
 	}
 }
 
@@ -58,5 +52,5 @@ func (board *Bitboards) Print_Bitboard() {
 	}
 	print("\n     a b c d e f g h\n\n")
 
-	fmt.Printf("    Bitboard: %d\n\n", board.board)
+	fmt.Printf("    Bitboard: %d\n\n", board.Board)
 }

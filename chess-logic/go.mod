@@ -1,4 +1,4 @@
-module github.com/skjdfhkskjds/Chess
+module github.com/skjdfhkskjds/Chess/chess-logic
 
 go 1.18
 

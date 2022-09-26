@@ -33,8 +33,27 @@ func (board *Bitboards) PopBit(square int) {
 }
 
 // Complex Operations
+func (board *Bitboards) GetLeastSignificantFirstBitIndex() int {
+	b := board.Board
+	const debruijn64 uint64 = 0x03f79d71b4cb0a89
+	return Index64[((b&-b)*debruijn64)>>58]
+}
 
-func (board *Bitboards) Print_Bitboard() {
+func (board *Bitboards) SetOccupancies(index int, bits_in_mask int) *Bitboards {
+	occupancy_board := NewBitboard()
+	new := NewBitboard()
+	new.Board = board.Board
+	for count := 0; count < bits_in_mask; count++ {
+		square := new.GetLeastSignificantFirstBitIndex()
+		new.PopBit(square)
+		if index&(1<<count) != 0 {
+			occupancy_board.Board |= (uint64(1) << square)
+		}
+	}
+	return occupancy_board
+}
+
+func (board *Bitboards) PrintBitboard() {
 	print("\n")
 	for rank := 0; rank < 8; rank++ {
 		for file := 0; file < 8; file++ {

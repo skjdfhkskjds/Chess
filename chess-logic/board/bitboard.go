@@ -4,15 +4,23 @@ import (
 	"fmt"
 )
 
+type Game struct {
+	Boards      [12]*Bitboards
+	Occupancies [3]*Bitboards
+	Side        int
+	Enpassant   int
+	Castle      int
+}
+
 type Bitboards struct {
 	Board uint64
 	Piece int
 }
 
 // Initializes Bitboard
-func NewBitboard() *Bitboards {
+func NewBitboard(state uint64) *Bitboards {
 	return &Bitboards{
-		Board: 0,
+		Board: state,
 	}
 }
 
@@ -40,8 +48,8 @@ func (board *Bitboards) GetLeastSignificantFirstBitIndex() int {
 }
 
 func (board *Bitboards) SetOccupancies(index int, bits_in_mask int) *Bitboards {
-	occupancy_board := NewBitboard()
-	new := NewBitboard()
+	occupancy_board := NewBitboard(0)
+	new := NewBitboard(0)
 	new.Board = board.Board
 	for count := 0; count < bits_in_mask; count++ {
 		square := new.GetLeastSignificantFirstBitIndex()

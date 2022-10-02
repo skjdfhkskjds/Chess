@@ -76,9 +76,29 @@ func (attacks *AttackMasks) GetBishopAttacks(square int, state uint64) *board.Bi
 }
 
 func (attacks *AttackMasks) GetRookAttacks(square int, state uint64) *board.Bitboards {
-	// get bishop attacks given current board state
+	// get rook attacks given current board state
 	state &= attacks.RookMasks[square].Board
 	state *= board.RookMagicNumbers[square]
 	state >>= 64 - board.RelevantRookOccupancyBitCount[square]
 	return attacks.RookAttacks[square][state]
+}
+
+func (attacks *AttackMasks) GetQueenAttacks(square int, state uint64) *board.Bitboards {
+	bishopState := state
+	rookState := state
+
+	// get bishop attacks given current board state
+	bishopState &= attacks.BishopMasks[square].Board
+	bishopState *= board.BishopMagicNumbers[square]
+	bishopState >>= 64 - board.RelevantBishopOccupancyBitCount[square]
+
+	attackBoard := attacks.BishopAttacks[square][bishopState]
+
+	// get rook attacks given current board state
+	rookState &= attacks.RookMasks[square].Board
+	rookState *= board.RookMagicNumbers[square]
+	rookState >>= 64 - board.RelevantRookOccupancyBitCount[square]
+	attackBoard.Board |= attacks.RookAttacks[square][rookState].Board
+
+	return attackBoard
 }

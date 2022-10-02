@@ -3,8 +3,8 @@ package moves
 import "github.com/skjdfhkskjds/Chess/chess-logic/board"
 
 func GenerateBishopMasks(square int) *board.Bitboards {
-	attackBoard := board.NewBitboard()
-	pieceBoard := board.NewBitboard()
+	attackBoard := board.NewBitboard(0)
+	pieceBoard := board.NewBitboard(0)
 	pieceBoard.SetBit(square)
 
 	target_rank := square / 8
@@ -32,8 +32,8 @@ func GenerateBishopMasks(square int) *board.Bitboards {
 }
 
 func GenerateBishopAttacks(square int, b board.Bitboards) *board.Bitboards {
-	attackBoard := board.NewBitboard()
-	pieceBoard := board.NewBitboard()
+	attackBoard := board.NewBitboard(0)
+	pieceBoard := board.NewBitboard(0)
 	pieceBoard.SetBit(square)
 
 	target_rank := square / 8

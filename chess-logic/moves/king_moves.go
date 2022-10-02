@@ -3,8 +3,8 @@ package moves
 import "github.com/skjdfhkskjds/Chess/chess-logic/board"
 
 func GenerateKingAttacks(square int) *board.Bitboards {
-	attackBoard := board.NewBitboard()
-	pieceBoard := board.NewBitboard()
+	attackBoard := board.NewBitboard(0)
+	pieceBoard := board.NewBitboard(0)
 	pieceBoard.SetBit(square)
 
 	// Top Row

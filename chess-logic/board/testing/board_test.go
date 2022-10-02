@@ -8,7 +8,7 @@ import (
 var _ = Describe("Bitboard", func() {
 	BeforeEach(func() {
 		// var zeroBoard *board.Bitboards
-		// zeroBoard = board.NewBitboard()
+		// zeroBoard = board.NewBitboard(0)
 	})
 
 	When("PrintBitboard is run", func() {

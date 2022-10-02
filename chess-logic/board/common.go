@@ -4,6 +4,7 @@ package board
 const (
 	WHITE = iota
 	BLACK
+	BOTH
 )
 
 const (
@@ -95,9 +96,67 @@ const (
 	F1
 	G1
 	H1
+	no_square
+)
+
+// castling constants
+const (
+	Wk = 1
+	Wq = 2
+	Bk = 4
+	Bq = 8
+)
+
+// pieces constants
+const (
+	WP = iota
+	WN
+	WB
+	WR
+	WQ
+	WK
+	BP
+	BN
+	BB
+	BR
+	BQ
+	BK
 )
 
 var (
+	ASCII_TO_CONSTANT = map[byte]int{
+		'P': WP,
+		'N': WN,
+		'B': WB,
+		'R': WR,
+		'Q': WQ,
+		'K': WK,
+		'p': BP,
+		'n': BN,
+		'b': BB,
+		'r': BR,
+		'q': BQ,
+		'k': BK,
+	}
+)
+
+// ASCII and unicode piece representations
+var (
+	ASCII_PIECES   = [12]string{"P", "N", "B", "R", "Q", "K", "p", "n", "b", "r", "q", "k"}
+	UNICODE_PIECES = [12]string{"♙", "♘", "♗", "♖", "♕", "♔", "♟︎", "♞", "♝", "♜", "♛", "♚"}
+)
+
+// FEN String Sample Positions
+const (
+	EMPTY_POSITION  = "8/8/8/8/8/8/8/8 w - - "
+	START_POSITION  = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 "
+	TRICKY_POSITION = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 "
+	KILLER_POSITION = "rnbqkb1r/pp1p1pPp/8/2p1pP2/1P1P4/3P3P/P1P1P3/RNBQKBNR w KQkq e6 0 1"
+	CMK_POSITION    = "r2q1rk1/ppp2ppp/2n1bn2/2b1p3/3pP3/3P1NPP/PPP1NPB1/R1BQ1RK1 b - - 0 9 "
+)
+
+var (
+	//
 	Index64 = [64]int{0, 1, 48, 2, 57, 49, 28, 3,
 		61, 58, 50, 42, 38, 29, 17, 4,
 		62, 55, 59, 36, 53, 51, 43, 22,
@@ -107,6 +166,7 @@ var (
 		46, 26, 40, 15, 34, 20, 31, 10,
 		25, 14, 19, 9, 13, 8, 7, 6}
 
+	// index to coords
 	IndexesToCoordinates = [64]string{
 		"a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8",
 		"a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7",
@@ -271,4 +331,94 @@ var (
 	}
 )
 
+// bitboards representing starting positions of each piece
+var (
+	GameStartBoards = [12]uint64{
+		71776119061217280,
+		4755801206503243776,
+		2594073385365405696,
+		9295429630892703744,
+		576460752303423488,
+		1152921504606846976,
+		65280,
+		66,
+		36,
+		129,
+		8,
+		16,
+	}
+	GameStartOccupancies = [3]uint64{
+		18446462598732840960,
+		65535,
+		18446462598732906495,
+	}
+)
+
 // Readable squares [IF NEEDED IN FUTURE]
+
+/*
+                            WHITE PIECES
+        Pawns                  Knights              Bishops
+
+  8  0 0 0 0 0 0 0 0    8  0 0 0 0 0 0 0 0    8  0 0 0 0 0 0 0 0
+  7  0 0 0 0 0 0 0 0    7  0 0 0 0 0 0 0 0    7  0 0 0 0 0 0 0 0
+  6  0 0 0 0 0 0 0 0    6  0 0 0 0 0 0 0 0    6  0 0 0 0 0 0 0 0
+  5  0 0 0 0 0 0 0 0    5  0 0 0 0 0 0 0 0    5  0 0 0 0 0 0 0 0
+  4  0 0 0 0 0 0 0 0    4  0 0 0 0 0 0 0 0    4  0 0 0 0 0 0 0 0
+  3  0 0 0 0 0 0 0 0    3  0 0 0 0 0 0 0 0    3  0 0 0 0 0 0 0 0
+  2  1 1 1 1 1 1 1 1    2  0 0 0 0 0 0 0 0    2  0 0 0 0 0 0 0 0
+  1  0 0 0 0 0 0 0 0    1  0 1 0 0 0 0 1 0    1  0 0 1 0 0 1 0 0
+     a b c d e f g h       a b c d e f g h       a b c d e f g h
+         Rooks                 Queens                 King
+  8  0 0 0 0 0 0 0 0    8  0 0 0 0 0 0 0 0    8  0 0 0 0 0 0 0 0
+  7  0 0 0 0 0 0 0 0    7  0 0 0 0 0 0 0 0    7  0 0 0 0 0 0 0 0
+  6  0 0 0 0 0 0 0 0    6  0 0 0 0 0 0 0 0    6  0 0 0 0 0 0 0 0
+  5  0 0 0 0 0 0 0 0    5  0 0 0 0 0 0 0 0    5  0 0 0 0 0 0 0 0
+  4  0 0 0 0 0 0 0 0    4  0 0 0 0 0 0 0 0    4  0 0 0 0 0 0 0 0
+  3  0 0 0 0 0 0 0 0    3  0 0 0 0 0 0 0 0    3  0 0 0 0 0 0 0 0
+  2  0 0 0 0 0 0 0 0    2  0 0 0 0 0 0 0 0    2  0 0 0 0 0 0 0 0
+  1  1 0 0 0 0 0 0 1    1  0 0 0 1 0 0 0 0    1  0 0 0 0 1 0 0 0
+     a b c d e f g h       a b c d e f g h       a b c d e f g h
+                            BLACK PIECES
+        Pawns                  Knights              Bishops
+
+  8  0 0 0 0 0 0 0 0    8  0 1 0 0 0 0 1 0    8  0 0 1 0 0 1 0 0
+  7  1 1 1 1 1 1 1 1    7  0 0 0 0 0 0 0 0    7  0 0 0 0 0 0 0 0
+  6  0 0 0 0 0 0 0 0    6  0 0 0 0 0 0 0 0    6  0 0 0 0 0 0 0 0
+  5  0 0 0 0 0 0 0 0    5  0 0 0 0 0 0 0 0    5  0 0 0 0 0 0 0 0
+  4  0 0 0 0 0 0 0 0    4  0 0 0 0 0 0 0 0    4  0 0 0 0 0 0 0 0
+  3  0 0 0 0 0 0 0 0    3  0 0 0 0 0 0 0 0    3  0 0 0 0 0 0 0 0
+  2  0 0 0 0 0 0 0 0    2  0 0 0 0 0 0 0 0    2  0 0 0 0 0 0 0 0
+  1  0 0 0 0 0 0 0 0    1  0 0 0 0 0 0 0 0    1  0 0 0 0 0 0 0 0
+     a b c d e f g h       a b c d e f g h       a b c d e f g h
+         Rooks                 Queens                 King
+  8  1 0 0 0 0 0 0 1    8  0 0 0 1 0 0 0 0    8  0 0 0 0 1 0 0 0
+  7  0 0 0 0 0 0 0 0    7  0 0 0 0 0 0 0 0    7  0 0 0 0 0 0 0 0
+  6  0 0 0 0 0 0 0 0    6  0 0 0 0 0 0 0 0    6  0 0 0 0 0 0 0 0
+  5  0 0 0 0 0 0 0 0    5  0 0 0 0 0 0 0 0    5  0 0 0 0 0 0 0 0
+  4  0 0 0 0 0 0 0 0    4  0 0 0 0 0 0 0 0    4  0 0 0 0 0 0 0 0
+  3  0 0 0 0 0 0 0 0    3  0 0 0 0 0 0 0 0    3  0 0 0 0 0 0 0 0
+  2  0 0 0 0 0 0 0 0    2  0 0 0 0 0 0 0 0    2  0 0 0 0 0 0 0 0
+  1  0 0 0 0 0 0 0 0    1  0 0 0 0 0 0 0 0    1  0 0 0 0 0 0 0 0
+     a b c d e f g h       a b c d e f g h       a b c d e f g h
+                             OCCUPANCIES
+     White occupancy       Black occupancy       All occupancies
+  8  0 0 0 0 0 0 0 0    8  1 1 1 1 1 1 1 1    8  1 1 1 1 1 1 1 1
+  7  0 0 0 0 0 0 0 0    7  1 1 1 1 1 1 1 1    7  1 1 1 1 1 1 1 1
+  6  0 0 0 0 0 0 0 0    6  0 0 0 0 0 0 0 0    6  0 0 0 0 0 0 0 0
+  5  0 0 0 0 0 0 0 0    5  0 0 0 0 0 0 0 0    5  0 0 0 0 0 0 0 0
+  4  0 0 0 0 0 0 0 0    4  0 0 0 0 0 0 0 0    4  0 0 0 0 0 0 0 0
+  3  0 0 0 0 0 0 0 0    3  0 0 0 0 0 0 0 0    3  0 0 0 0 0 0 0 0
+  2  1 1 1 1 1 1 1 1    2  0 0 0 0 0 0 0 0    2  1 1 1 1 1 1 1 1
+  1  1 1 1 1 1 1 1 1    1  0 0 0 0 0 0 0 0    1  1 1 1 1 1 1 1 1
+                            ALL TOGETHER
+                        8  ♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜
+                        7  ♟︎ ♟︎ ♟︎ ♟︎ ♟︎ ♟︎ ♟︎ ♟︎
+                        6  . . . . . . . .
+                        5  . . . . . . . .
+                        4  . . . . . . . .
+                        3  . . . . . . . .
+                        2  ♙ ♙ ♙ ♙ ♙ ♙ ♙ ♙
+                        1  ♖ ♘ ♗ ♕ ♔ ♗ ♘ ♖
+                           a b c d e f g h
+*/
